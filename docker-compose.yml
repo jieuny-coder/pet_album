@@ -1,0 +1,31 @@
+version: '3.9'
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "5173:5173" # Vue.js 서버 포트
+    volumes:
+      - ./frontend:/app #로컬 파일을 컨테이너와 공유
+    command: npm run dev # Vue.js 실행 명령어
+
+  backend:
+    build: 
+      context: ./backend
+    ports:
+      - "8000:8000" #FastAPI 서버 포트
+    volumes:
+      - ./backend:/app #로컬 파일을 컨테이너와 공유
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  mongodb:
+    image: mongo
+    container_name: mongodb #컨테이너 이름
+    ports:
+      - "27017:27017" # MongoDB 기본 포트
+    volumes:
+      - mongodb_data:/data/db # MongoDB 데이터 볼륨
+
+volumes:
+  mongodb_data:
